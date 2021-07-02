@@ -1,19 +1,15 @@
-# Docker
-# Build a Docker image
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+trigger: 
+ - main
 
-trigger:
-- main
+pool:
+   vmImage: 'ubuntu-latest'
 
-resources:
-- repo: self
+steps: 
+- task: GoTool@0
+  inputs:
+    version: '1.13.5'
 
-variables:
-  tag: '$(Build.BuildId)'
-  imageName: 'golang-poc-img'
-
-steps:
-  - script: |
-      docker build -f Dockerfile -t $(imageName) .
-      docker login -u admin -p Harbor12345 13.94.30.68:3000
-      docker push $(imageName)
+- task: Go@0
+  inputs:
+    command: 'build'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
